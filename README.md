@@ -54,3 +54,9 @@ To install it:
 * Copy the `zoom_detect.lua` file to ~/.hammerspoon/
 * Add the following line to ~/.hammerspoon/init.lua:
   `local zoom_detect = require("zoom_detect")`
+
+### Alfred workflow
+
+There is an alfred workflow in [helpers/alfred](helpers/alfred) to let you
+quickly update your slack status from within alfred. See the README in that
+directory for more information on using it.
