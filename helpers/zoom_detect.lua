@@ -20,8 +20,8 @@ end
 
 function zoom_window_exists()
     local a = hs.application.find("zoom.us")
-    return a:findWindow("Zoom Meeting ID") ~= nil or
-        a:findWindow("Sharing Frame Window") ~= nil
+    return a ~= nil and (a:findWindow("Zoom Meeting ID") ~= nil or
+        a:findWindow("Sharing Frame Window") ~= nil)
 end
 
 inzoom = false
