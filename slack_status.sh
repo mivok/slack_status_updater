@@ -94,6 +94,6 @@ PROFILE="{\"status_emoji\":\"$EMOJI\",\"status_text\":\"$TEXT\"}"
 curl -s --data token="$TOKEN" \
     --data-urlencode profile="$PROFILE" \
     https://slack.com/api/users.profile.set | \
-    grep -q '^{"ok":true,' && \
+    grep -q '"ok":true,' && \
         echo "${green}Status updated ok${reset}" || \
         echo "${red}There was a problem updating the status${reset}"
