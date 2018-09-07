@@ -14,31 +14,79 @@
 -- Configuration
 check_interval=20 -- How often to check if you're in zoom, in seconds
 
+-- Initialization
+inzoom = nil
+local lightbox = require("lightbox")
+local logger = hs.logger.new("zoomdetect")
+
 function update_status(status)
     task = hs.execute("slack_status.sh " .. status, true)
 end
 
-function zoom_window_exists()
-    local a = hs.application.find("zoom.us")
-    return a ~= nil and ((a:findWindow("Zoom Meeting ID") ~= nil or
-        a:findWindow("Sharing Frame Window") ~= nil) or
-        a:findWindow("^Zoom$") ~= nil)
+function on_air()
+    inzoom = true
+    hs.notify.show("Started zoom meeting", "Updating slack status", "")
+    update_status("zoom")
+    lightbox.on()
 end
 
-inzoom = false
-zoomTimer = hs.timer.doEvery(check_interval, function()
-    if zoom_window_exists() then
-        if inzoom == false then
-            inzoom = true
-            hs.notify.show("Started zoom meeting", "Updating slack status", "")
-            update_status("zoom")
+function off_air()
+    inzoom = false
+    hs.notify.show("Left zoom meeting", "Updating slack status", "")
+    update_status("none")
+    lightbox.off()
+end
+
+function isInMeeting()
+    local zoom_app = hs.application.find("zoom.us")
+    if zoom_app == nil then return false end
+    return meeting_menu_is_present(zoom_app)
+end
+
+function meeting_menu_is_present(app)
+    return app:getMenuItems()[2]["AXTitle"] == "Meeting"
+end
+
+function meetingCheck()
+    logger.d("check for meeting")
+    if isInMeeting() then
+        if inzoom == false or inzoom == nil then
+            logger.i("going on air")
+            on_air()
         end
     else
-        if inzoom == true then
-            inzoom = false
-            hs.notify.show("Left zoom meeting", "Updating slack status", "")
-            update_status("none")
+        if inzoom == true or inzoom == nil then
+            logger.i("going off air")
+            off_air()
         end
     end
-end)
-zoomTimer:start()
+end
+
+meetingCheck()
+
+zoomTimer = hs.timer.new(check_interval, meetingCheck)
+
+function zoomWatcherCallback(appName, eventType, appObject)
+    if (appName == "zoom.us") then
+        logger.d("zoom called back with " .. eventType .. " event")
+        if (eventType == hs.application.watcher.activated or
+            eventType == hs.application.watcher.deactivated) then
+
+            meetingCheck()
+            if not zoomTimer:running() then
+                logger.i("restarting timer to monitor in/out of meetings")
+                zoomTimer:start()
+            end
+        elseif eventType == hs.application.watcher.launched then
+            logger.i("starting timer to monitor in/out of meetings")
+            zoomTimer:start()
+        elseif eventType == hs.application.watcher.terminated then
+            logger.i("stopping timer to monitor in/out of meetings")
+            zoomTimer:stop()
+            meetingCheck()
+        end
+    end
+end
+
+zoomWatcher = hs.application.watcher.new(zoomWatcherCallback)
+zoomWatcher:start()
