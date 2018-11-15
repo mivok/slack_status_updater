@@ -44,7 +44,9 @@ function isInMeeting()
 end
 
 function meeting_menu_is_present(app)
-    return app:getMenuItems()[2]["AXTitle"] == "Meeting"
+    menu_items = app:getMenuItems()
+    if menu_items == nil then return false end
+    return menu_items[2]["AXTitle"] == "Meeting"
 end
 
 function meetingCheck()
