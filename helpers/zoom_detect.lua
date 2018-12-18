@@ -18,16 +18,21 @@ function update_status(status)
     task = hs.execute("slack_status.sh " .. status, true)
 end
 
-function zoom_window_exists()
+function in_zoom_meeting()
     local a = hs.application.find("zoom.us")
-    return a ~= nil and ((a:findWindow("Zoom Meeting ID") ~= nil or
-        a:findWindow("Sharing Frame Window") ~= nil) or
-        a:findWindow("^Zoom$") ~= nil)
+    if a ~= nil then
+        m = a:findMenuItem("Start meeting")
+        -- Start meeting menu item exists and is disabled
+        return m ~= nil and not m["enabled"]
+    else
+        -- Zoom isn't running
+        return false
+    end
 end
 
 inzoom = false
 zoomTimer = hs.timer.doEvery(check_interval, function()
-    if zoom_window_exists() then
+    if in_zoom_meeting() then
         if inzoom == false then
             inzoom = true
             hs.notify.show("Started zoom meeting", "Updating slack status", "")
