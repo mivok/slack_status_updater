@@ -13,9 +13,8 @@ if [[ $1 == "setup" ]]; then
     echo "${green}==========================${reset}"
     echo
     echo "You need to have your slack api token ready. If you don't have one,"
-    echo "go to https://api.slack.com/custom-integrations/legacy-tokens and"
-    echo "click 'Create token' for your team. This should give you a token"
-    echo "you can copy and paste here."
+    echo "go to https://github.com/mivok/slack_status_updater and follow the"
+    echo "instructions there for creating a new slack app."
     echo
     read -r -p "${green}Enter your slack token: ${reset}" TOKEN
     cat > "$CONFIG_FILE" <<EOF
@@ -23,7 +22,7 @@ if [[ $1 == "setup" ]]; then
 # Configuration file for slack_status
 TOKEN=$TOKEN
 
-PRESET_EMOJI_test=":check:"
+PRESET_EMOJI_test=":white_check_mark:"
 PRESET_TEXT_test="Testing status updater"
 
 PRESET_EMOJI_zoom=":zoom:"
@@ -91,9 +90,12 @@ else
 fi
 
 PROFILE="{\"status_emoji\":\"$EMOJI\",\"status_text\":\"$TEXT\"}"
-curl -s --data token="$TOKEN" \
+RESPONSE=$(curl -s --data token="$TOKEN" \
     --data-urlencode profile="$PROFILE" \
-    https://slack.com/api/users.profile.set | \
-    grep -q '"ok":true,' && \
-        echo "${green}Status updated ok${reset}" || \
-        echo "${red}There was a problem updating the status${reset}"
+    https://slack.com/api/users.profile.set)
+if echo "$RESPONSE" | grep -q '"ok":true,'; then
+    echo "${green}Status updated ok${reset}"
+else
+    echo "${red}There was a problem updating the status${reset}"
+    echo "Response: $RESPONSE"
+fi

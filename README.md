@@ -1,7 +1,6 @@
 # Slack status updater
 
-A simple shell script to update your status in slack from the command line,
-based on presets you provide in a configuration file.
+A simple shell script to update your status in slack from the command line, based on presets you provide in a configuration file.
 
 ## Installation
 
@@ -9,10 +8,17 @@ Copy `slack_status.sh` to somewhere in your path.
 
 ## Setup
 
-First, you need to get an api token. Go to
-<https://api.slack.com/custom-integrations/legacy-tokens> and grab the token
-for your team. If you don't already have a token for your team, click the
-'Create token' button next to the team to get a token.
+Before you can use this, you need to add the status updater as a new slack app. To do this:
+
+* Go to <https://api.slack.com/apps/new> to create a new app
+* Choose a name for the new app: Slack status updater
+* Select your workspace from the "Development Slack Workspace" dropdown
+* This will bring you to the app configuration section, choose "OAuth and Permissions"  from the sidebar on the left under the "Features" section.
+* Scroll down until you see "User token scopes" and click "Add an OAuth scope"
+* Type in `users.profile:write` and select it from the menu.
+* Scroll back to the top and click the "Install App to Workspace" button.
+* You will be brought to a screen asking you to allow the app access. Click "Allow"
+* You will be taken back to a screen containing an access token starting with `xoxp-`. Click the "Copy" button to copy this to the clipboard.
 
 Once you have the token, run `slack_status.sh setup` and follow the prompts.
 This will create a configuration file for you.
