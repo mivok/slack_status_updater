@@ -9,10 +9,12 @@ fi
 
 
 PROFILE="{\"status_emoji\":\"$EMOJI\",\"status_text\":\"$TEXT\"}"
-# Note: TOKEN should be set outside this script
-curl -s --data token="$TOKEN" \
+RESPONSE=$(curl -s --data token="$TOKEN" \
     --data-urlencode profile="$PROFILE" \
-    https://slack.com/api/users.profile.set | \
-    grep -q '^{"ok":true,' && \
-        echo -e "$STATUS_TEXT" || \
-        echo "There was a problem updating the status"
+    https://slack.com/api/users.profile.set)
+if echo "$RESPONSE" | grep -q '"ok":true,'; then
+    echo "Status updated"
+else
+    echo "There was a problem updating the status"
+    echo "Response: $RESPONSE"
+fi
