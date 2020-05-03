@@ -21,7 +21,7 @@ end
 function in_zoom_meeting()
     local a = hs.application.find("zoom.us")
     if a ~= nil then
-        m = a:findMenuItem("Start meeting")
+        m = a:findMenuItem("Start Meeting")
         -- Start meeting menu item exists and is disabled
         return m ~= nil and not m["enabled"]
     else
