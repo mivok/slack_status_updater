@@ -16,6 +16,8 @@ Before you can use this, you need to add the status updater as a new slack app. 
 * This will bring you to the app configuration section, choose "OAuth and Permissions"  from the sidebar on the left under the "Features" section.
 * Scroll down until you see "User token scopes" and click "Add an OAuth scope"
 * Type in `users.profile:write` and select it from the menu.
+* If you want to use the `awayback.sh` script that's also in this
+  repository, add the `users:write` scope as well.
 * Scroll back to the top and click the "Install App to Workspace" button.
 * You will be brought to a screen asking you to allow the app access. Click "Allow"
 * You will be taken back to a screen containing an access token starting with `xoxp-`. Click the "Copy" button to copy this to the clipboard.
