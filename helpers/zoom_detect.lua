@@ -10,6 +10,8 @@
 -- * Copy this file to ~/.hammerspoon
 -- * Add the following line to ~/.hammerspoon/init.lua
 --      local zoom_detect = require("zoom_detect")
+-- * If it's a fresh `brew install` of Hammerspoon, start it and make sure
+--   accessibility is enabled
 
 -- Configuration
 check_interval=20 -- How often to check if you're in zoom, in seconds
