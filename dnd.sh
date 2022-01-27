@@ -28,6 +28,8 @@ if [[ $STATE != "on" && $STATE != "off" ]]; then
     exit 1
 fi
 
+# The Slack API doesn't seem to let you set an indefinite DND, so you have to provide a time in minutes
+# TODO: Allow users to configure this, but for now 60 minutes seems fine
 if [[ $STATE == "on" ]]; then
     STATE="60"
 else
