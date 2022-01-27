@@ -2,6 +2,16 @@
 
 A simple shell script to update your status in slack from the command line, based on presets you provide in a configuration file.
 
+This is a fork that adds support for presence/DND instead of just status (well, manual presence changing was previously supported, but not with the Zoom integration). The original author's blog post: https://ruk.ca/content/automatically-setting-my-slack-status-when-im-zoom-meeting
+
+# A note on security
+
+This app requires you to trust:
+- [Hammerspoon](https://www.hammerspoon.org/)
+- The shell scripts in this repo.
+
+Everything else is official Slack APIs with minimal token access (one for each of "status", "presence", "dnd", see below for details).
+
 ## Installation
 
 Copy `slack_status.sh` to somewhere in your path.
