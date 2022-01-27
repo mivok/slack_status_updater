@@ -14,10 +14,18 @@
 --   accessibility is enabled
 
 -- Configuration
-check_interval=20 -- How often to check if you're in zoom, in seconds
+check_interval=30 -- How often to check if you're in zoom, in seconds
 
 function update_status(status)
     task = hs.execute("slack_status.sh " .. status, true)
+end
+
+function update_presence(presence)
+    task = hs.execute("awayback.sh " .. presence, true)
+end
+
+function update_dnd(on_or_off)
+    task = hs.execute("dnd.sh " .. on_or_off, true)
 end
 
 function in_zoom_meeting()
@@ -39,12 +47,16 @@ zoomTimer = hs.timer.doEvery(check_interval, function()
             inzoom = true
             hs.notify.show("Started zoom meeting", "Updating slack status", "")
             update_status("zoom")
+            update_presence("away")
+            update_dnd("on")
         end
     else
         if inzoom == true then
             inzoom = false
             hs.notify.show("Left zoom meeting", "Updating slack status", "")
             update_status("none")
+            update_presence("back")
+            update_dnd("off")
         end
     end
 end)

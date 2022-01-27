@@ -6,6 +6,12 @@ A simple shell script to update your status in slack from the command line, base
 
 Copy `slack_status.sh` to somewhere in your path.
 
+## TODO
+
+- Prompt user if if they want `slack_status.sh`, `awayback.sh`, `dnd.sh`, or all three.
+- Allow config to `ln -s` shell scripts to `/usr/local/bin`
+- Allow config to `ln -s` Lua script to `~/.hammerspoon`
+
 ## Setup
 
 Before you can use this, you need to add the status updater as a new slack app. To do this:
@@ -16,8 +22,10 @@ Before you can use this, you need to add the status updater as a new slack app. 
 * This will bring you to the app configuration section, choose "OAuth and Permissions"  from the sidebar on the left under the "Features" section.
 * Scroll down until you see "User token scopes" and click "Add an OAuth scope"
 * Type in `users.profile:write` and select it from the menu.
-* If you want to use the `awayback.sh` script that's also in this
-  repository, add the `users:write` scope as well.
+* If you want to use the `awayback.sh` script that's also in this repository, add the `users:write` scope as well.
+  * If not, comment out usages of `update_presence` function in `zoom_detect.lua`.
+* If you want to use the `dnd.sh` script that's also in this repository, add the `dnd:write` scope as well.
+  * If not, comment out usages of `update_dnd` function in `zoom_detect.lua`.
 * Scroll back to the top and click the "Install App to Workspace" button.
 * You will be brought to a screen asking you to allow the app access. Click "Allow"
 * You will be taken back to a screen containing an access token starting with `xoxp-`. Click the "Copy" button to copy this to the clipboard.
@@ -59,9 +67,9 @@ To install it:
 * Install and set up the slack_status.sh script (make sure it's in your path)
 * Ensure there is a 'zoom' preset (one is created by default during setup)
 * Install hammerspoon (brew cask install hammerspoon) if you don't have it already.
-* Copy the `zoom_detect.lua` file to ~/.hammerspoon/
-* Add the following line to ~/.hammerspoon/init.lua:
-  `local zoom_detect = require("zoom_detect")`
+* Copy the `zoom_detect.lua` file to `~/.hammerspoon/`
+* Add the following line to `~/.hammerspoon/init.lua`:
+  * `local zoom_detect = require("zoom_detect")`
 
 ### Alfred workflow
 
