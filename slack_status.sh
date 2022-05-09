@@ -20,13 +20,16 @@ if [[ $1 == "setup" ]]; then
     cat > "$CONFIG_FILE" <<EOF
 # vim: ft=sh
 # Configuration file for slack_status
+# Set EXPIRES to 0 for no expiration or to seconds as an integer value
 TOKEN=$TOKEN
 
 PRESET_EMOJI_test=":white_check_mark:"
 PRESET_TEXT_test="Testing status updater"
+PRESET_EXPIRES_test=0
 
-PRESET_EMOJI_zoom=":zoom:"
+PRESET_EMOJI_zoom=":ghost:"
 PRESET_TEXT_zoom="In a zoom meeting"
+PRESET_EXPIRES_zoom=3600
 EOF
     echo
     echo "A default configuration has been created at ${green}$CONFIG_FILE.${reset}"
@@ -69,10 +72,12 @@ fi
 if [[ $PRESET == "none" ]]; then
     EMOJI=""
     TEXT=""
+    EXPIRES=""
     echo "Resetting slack status to blank"
 else
     eval "EMOJI=\$PRESET_EMOJI_$PRESET"
     eval "TEXT=\$PRESET_TEXT_$PRESET"
+    eval "EXPIRES=\$PRESET_EXPIRES_$PRESET"
 
     if [[ -z $EMOJI || -z $TEXT ]]; then
         echo "${yellow}No preset found:${reset} $PRESET"
@@ -89,7 +94,14 @@ else
     echo "Updating status to: ${yellow}$EMOJI ${green}$TEXT${reset}"
 fi
 
-PROFILE="{\"status_emoji\":\"$EMOJI\",\"status_text\":\"$TEXT\"}"
+if [[ $EXPIRES == "0" ]]; then
+    EXPIRATION=0
+else
+    EPOCH=$(date +"%s")
+    EXPIRATION=$(expr $EPOCH + $EXPIRES)
+fi
+
+PROFILE="{\"status_emoji\":\"$EMOJI\",\"status_text\":\"$TEXT\",\"status_expiration\":$EXPIRATION}"
 RESPONSE=$(curl -s --data token="$TOKEN" \
     --data-urlencode profile="$PROFILE" \
     https://slack.com/api/users.profile.set)
