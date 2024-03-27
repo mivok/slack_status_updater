@@ -1,11 +1,14 @@
 #!/bin/bash
 CONFIG_FILE="$HOME/.slack_status.conf"
 
+# Set TERM so it works over SSL
+[[ ${TERM}=="" ]] && TPUTTERM=' -T xterm-256color' || TPUTTERM=''
+
 # Colors
-red=$(tput setaf 1)
-green=$(tput setaf 2)
-yellow=$(tput setaf 3)
-reset=$(tput sgr0)
+red=$(tput${TPUTTERM} setaf 1)
+green=$(tput${TPUTTERM} setaf 2)
+yellow=$(tput${TPUTTERM} setaf 3)
+reset=$(tput${TPUTTERM} sgr0)
 
 if [[ -f "$CONFIG_FILE" ]]; then
     . "$CONFIG_FILE"
